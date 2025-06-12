@@ -26,6 +26,7 @@ from typing_extensions import Self, TypedDict, overload
 
 import numpy as np
 import torch
+import torch.distributions as dist
 from sklearn import config_context
 from sklearn.base import (
     BaseEstimator,
@@ -772,7 +773,7 @@ def _logits_to_output(
     logits: torch.Tensor,
     criterion: FullSupportBarDistribution,
     quantiles: list[float],
-) -> np.ndarray | list[np.ndarray]:
+):# -> np.ndarray | list[np.ndarray]:
     """Convert the logits to the specified output type.
 
     Args:
@@ -799,4 +800,4 @@ def _logits_to_output(
     else:
         raise ValueError(f"Invalid output type: {output_type}")
 
-    return output.cpu().detach().numpy()  # type: ignore
+    return output, criterion.variance(logits) ** 0.5
